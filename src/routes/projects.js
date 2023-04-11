@@ -7,8 +7,8 @@ const {
 
 router.post('/', addProject);
 
-router.patch('/', updateProject);
+router.patch('/:projectId', updateProject);
 
-router.delete('/', deleteProject);
+router.delete('/:projectId', deleteProject);
 
 module.exports = router;
