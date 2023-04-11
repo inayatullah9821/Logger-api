@@ -153,7 +153,6 @@ exports.logData = async (req, res) => {
 
     const loggedData = await dbLogged.findandSortedName(query, pageNo, limit);
 
-    console.log(query);
     const totalHours = await LoggedHour.aggregate([
       { $match: query },
       { $group: { _id: null, total: { $sum: '$hours' } } },
