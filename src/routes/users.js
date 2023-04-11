@@ -1,38 +1,18 @@
-import { Router } from 'express';
-import { GetUserData, updateUserData } from '../controller/UserController';
+const router = require('express').Router();
+const { authenticate } = require('../middleware/authentication');
 
-const UserRoutes = Router();
+const {
+  logHours,
+  updateLogHours,
+  deleteLogHours,
+} = require('../controller/users');
 
-/**
- * @swagger
- * /api/v1/user/:
- *   get:
- *     summary: Retrieve a list of users
- *     description: Retrieve a list of users.
- *     responses:
- *       200:
- *         description: Success response.
- *       400:
- *         description: This error is sent when invalid details provided.
- *       500:
- *         description: Internal server error.
- */
-UserRoutes.get('/', GetUserData);
+router.use(authenticate);
 
-/**
- * @swagger
- * /api/v1/user/update:
- *   patch:
- *     summary: update a user.
- *     description: update a users. Can be used to update a user when prototyping or testing an API.
- *     responses:
- *       200:
- *         description: Success response.
- *       400:
- *         description: This error is sent when invalid details provided.
- *       500:
- *         description: Internal server error.
- */
-UserRoutes.patch('/update', updateUserData);
+router.post('/:projectId', logHours);
 
-export default UserRoutes;
+router.patch('/:logId', updateLogHours);
+
+router.delete('/:logId', deleteLogHours);
+
+module.exports = router;
