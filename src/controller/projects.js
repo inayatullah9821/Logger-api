@@ -1,5 +1,6 @@
 const joi = require('joi');
 const dbProject = require('../repository/dbProjects');
+const dbLogged = require('../repository/dbLogged');
 const { validateId } = require('../helpers/helpers');
 
 exports.addProject = async (req, res) => {
@@ -86,11 +87,48 @@ exports.updateProject = async (req, res) => {
 
 exports.deleteProject = async (req, res) => {
   try {
-    
+    const { projectId: _id } = req.params;
+    const isValid = validateId(_id);
+
+    if (!isValid) {
+      return res.status(400).send({
+        error: 'Invalid logId.'
+      });
+    }
+
+    const deletedProject = await dbProject.findByIdAndDelete(_id);
+    if (!deletedProject) {
+      return res.status(404).send({
+        error: 'LogId not found.',
+      });
+    }
+
+    await dbLogged.deleteMany({ projectId: _id });
+    return res.status(200).send({
+      message: 'Project deleted successfully.',
+    });
   } catch (error) {
     console.error(error);
     return res.status(500).send({
       error: 'Internal Server Error',
     })
   }
-}
+};
+
+exports.getProjects = async (req, res) => {
+  try {
+    let { pageNo, pageSize } = req.query;
+    pageNo = pageNo <= 0 ? 1 : pageNo;
+    const limit = pageSize || 10;
+
+    const projectList = await dbProject.findAll(pageNo, limit);
+    return res.status(200).send({
+      data: projectList,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send({
+      error: 'Internal Server Error',
+    })
+  }
+};
