@@ -5,9 +5,12 @@ const {
   logHours,
   updateLogHours,
   deleteLogHours,
+  logData,
 } = require('../controller/users');
 
 router.use(authenticate);
+
+router.get('/', logData);
 
 router.post('/:projectId', logHours);
 
