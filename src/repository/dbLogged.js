@@ -11,3 +11,19 @@ exports.create = (value) => LoggedHours.create(value);
 exports.countDocuments = (filter) => LoggedHours.countDocuments(filter);
 
 exports.findByIdAndDelete = (_id) => LoggedHours.findByIdAndDelete({ _id });
+
+exports.deleteMany = (filter) => LoggedHours.deleteMany(filter);
+
+exports.findandSortedName = (query, pageNo, limit) => LoggedHours
+  .find(query)
+  .skip((pageNo - 1) * limit)
+  .limit(limit)
+  .sort({ name: 1 })
+  .select('-createdAt -updatedAt -__v');
+
+exports.findandSortedDate = (query, pageNo, limit) => LoggedHours
+  .find(query)
+  .skip((pageNo - 1) * limit)
+  .limit(limit)
+  .sort({ date: 1 })
+  .select('-createdAt -updatedAt -__v');
